@@ -56,6 +56,37 @@ public class AVLTree<T extends Comparable<T>> extends BSTree<T> {
      */
     void rebalanceTree( AVLNode<T> x )
     {
-        //...
+        // Traverse up the tree from node x to the root
+        while (x != null) {
+            // Check if the current node is balanced
+            int balance = getBalance(x);
+        
+            // If the node is unbalanced (balance factor outside [-1, 1])
+            if (balance <= -2 || balance >= 2) {
+                // Get the taller child (z in the algorithm description)
+                AVLNode<T> z = x.getTallerChild();
+            
+                // Check for zig-zag cases (when balance of x and z have different signs)
+                if ((balance > 0 && getBalance(z) < 0) || (balance < 0 && getBalance(z) > 0)) {
+                    // For a left-heavy tree with right-heavy child
+                    if (getBalance(z) < 0) {
+                    leftRotate(z);
+                    }
+                    // For a right-heavy tree with left-heavy child
+                    else {
+                    rightRotate(z);
+                    }
+                }
+            
+                // Final rotation to balance the tree
+                if (balance >= 2) {
+                    rightRotate(x);
+                } else { // balance <= -2
+                    leftRotate(x);
+                }
+            }
+            // Move up to the parent
+            x = x.getParent();
+        }
     }
 }
